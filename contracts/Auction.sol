@@ -1,70 +1,78 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.20;
+
+interface IERC721 {
+    function safeTransferFrom(address from, address to, uint tokenId) external;
+
+    function transferFrom(address, address, uint) external;
+}
 
 contract Auction {
-    struct AuctionItem {
-        address seller;
-        uint256 startingPrice;
-        uint256 highestBid;
-        address highestBidder;
-        uint256 endTime;
-        bool isEnded;
-        bool isClaimed;
+    IERC721 public nft;
+    uint public nftId;
+
+    address payable public seller;
+    uint public endAt;
+    bool public started;
+    bool public ended;
+
+    address public highestBidder;
+    uint public highestBid;
+    mapping(address => uint) public bids;
+
+    constructor(address _nft, uint _nftId, uint _startingBid) {
+        nft = IERC721(_nft);
+        nftId = _nftId;
+
+        seller = payable(msg.sender);
+        highestBid = _startingBid;
     }
 
-    mapping(uint256 => AuctionItem) public auctions;
-    uint256 public nextAuctionId;
-    
-    event AuctionCreated(uint256 auctionId, address seller, uint256 endTime);
-    event BidPlaced(uint256 auctionId, address bidder, uint256 bid);
-    event AuctionEnded(uint256 auctionId, address winner, uint256 highestBid);
+    function start() external {
+        require(!started, "Auction already started");
+        require(msg.sender == seller, "Only seller can start auction");
 
-    function createAuction(uint256 startingPrice, uint256 duration) external returns (uint256 auctionId) {
-        auctionId = nextAuctionId++;
-        auctions[auctionId] = AuctionItem(
-            msg.sender,
-            startingPrice,
-            0,
-            address(0),
-            block.timestamp + duration,
-            false,
-            false
+        nft.transferFrom(msg.sender, address(this), nftId);
+        started = true;
+        endAt = block.timestamp + 7 days;
+    }
+
+    function bid() external payable {
+        require(started, "Auction not started");
+        require(block.timestamp < endAt, "Auction ended");
+        require(msg.value > highestBid, "Bid not higher than current highest");
+
+        if (highestBidder != address(0)) {
+            // Instead of sending the Ether back, add the highestBid of the previous highestBidder back to their balance for withdrawal
+            bids[highestBidder] += highestBid;
+        }
+
+        highestBidder = msg.sender;
+        highestBid = msg.value;
+    }
+
+    function end() external {
+        require(started, "Auction not started");
+        require(
+            block.timestamp >= endAt || msg.sender == seller,
+            "Auction not yet ended"
         );
-        emit AuctionCreated(auctionId, msg.sender, block.timestamp + duration);
-    }
+        require(!ended, "Auction already ended");
 
-    function placeBid(uint256 auctionId) external payable {
-        AuctionItem storage auction = auctions[auctionId];
-        require(block.timestamp < auction.endTime, "Auction already ended");
-        require(msg.value > auction.highestBid, "Bid is not higher than current highest bid");
-
-        if (auction.highestBidder != address(0)) {
-            payable(auction.highestBidder).transfer(auction.highestBid); // Refund the previous highest bidder
+        ended = true;
+        if (highestBidder != address(0)) {
+            // Transfer the NFT to the highest bidder and funds to the seller
+            nft.safeTransferFrom(address(this), highestBidder, nftId);
+            seller.transfer(highestBid);
+        } else {
+            // Revert the NFT transfer to the seller if no bids were made
+            nft.safeTransferFrom(address(this), seller, nftId);
         }
-
-        auction.highestBid = msg.value;
-        auction.highestBidder = msg.sender;
-        emit BidPlaced(auctionId, msg.sender, msg.value);
-    }
-
-    function endAuction(uint256 auctionId) external {
-        AuctionItem storage auction = auctions[auctionId];
-        require(block.timestamp >= auction.endTime, "Auction not yet ended");
-        require(!auction.isEnded, "Auction end already called");
-
-        auction.isEnded = true;
-        if (auction.highestBidder != address(0)) {
-            payable(auction.seller).transfer(auction.highestBid); // Send the highest bid to the seller
-        }
-
-        emit AuctionEnded(auctionId, auction.highestBidder, auction.highestBid);
     }
 
     // To implement: add more features as per points below
-        // Implement ERC721 transfer logic when the auction is created and when the winning bid is confirmed.
-        // Implement an event system for all contract actions.
-        // Add withdrawal logic allowing bidders to withdraw their bids so long as they aren’t the current highest bidder.
-        // Frontend to interact with the contract functions that shows live auctions, allows for placing bids, and displays auction results, 
-        // with real-time updates facilitated by listening to emitted events.
-
+    // Implement an event system for all contract actions.
+    // Add withdrawal logic allowing bidders to withdraw their bids so long as they aren’t the current highest bidder.
+    // Change the system to allow bidding with a specified ERC-20 token than ETH.
+    // Frontend to interact with the contract functions that shows live auction, current highest bid, allows for placing bids, and displays auction results.
 }

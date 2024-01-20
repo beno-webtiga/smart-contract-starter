@@ -14,7 +14,10 @@ contract Crowdfunding {
     mapping(uint256 => Campaign) public campaigns;
     mapping(uint256 => mapping(address => uint256)) public pledges;
 
-    function startCampaign(uint256 goalAmount, uint256 duration) external returns (uint256 campaignId) {
+    function startCampaign(
+        uint256 goalAmount,
+        uint256 duration
+    ) external returns (uint256 campaignId) {
         campaignId = numCampaigns++;
         Campaign storage c = campaigns[campaignId];
         c.creator = msg.sender;
@@ -52,8 +55,8 @@ contract Crowdfunding {
     }
 
     // To implement: add more features as per points below
-        // Add the ability to set minimum and maximum contribution limits.
-        // Implement an event system for all contract actions.
-        // Develop a system to grant rewards based on the contribution amount in the form of another ERC20 token.
-
+    // Add the ability to set minimum and maximum contribution limits.
+    // Implement an event system for all contract actions.
+    // Develop a system to grant rewards based on the contribution amount in the form of another ERC20 token.
+    // Frontend to interact with the contract functions. And see real time contributed amounts.
 }

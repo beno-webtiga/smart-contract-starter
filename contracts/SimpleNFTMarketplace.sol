@@ -19,21 +19,25 @@ contract SimpleNFTMarketplace is ERC721URIStorage, ReentrancyGuard {
 
     constructor() ERC721("SimpleNFTMarketplace", "SNFTM") {}
 
-    function createListing(address nftAddress, uint256 tokenId, uint256 price) public nonReentrant {
+    function createListing(
+        address nftAddress,
+        uint256 tokenId,
+        uint256 price
+    ) public nonReentrant {
         // Transfer NFT to contract
         IERC721(nftAddress).transferFrom(msg.sender, address(this), tokenId);
-        
-        // Create listing
-        listings.push(Listing({
-            seller: msg.sender,
-            nftAddress: nftAddress,
-            tokenId: tokenId,
-            price: price,
-            isActive: true
-        }));
-        listingCount++;
 
-        // Emit event (not included but recommended)
+        // Create listing
+        listings.push(
+            Listing({
+                seller: msg.sender,
+                nftAddress: nftAddress,
+                tokenId: tokenId,
+                price: price,
+                isActive: true
+            })
+        );
+        listingCount++;
     }
 
     function purchaseListing(uint256 listingId) public payable nonReentrant {
@@ -45,18 +49,20 @@ contract SimpleNFTMarketplace is ERC721URIStorage, ReentrancyGuard {
         payable(listing.seller).transfer(msg.value);
 
         // Transfer NFT to buyer
-        IERC721(listing.nftAddress).safeTransferFrom(address(this), msg.sender, listing.tokenId);
+        IERC721(listing.nftAddress).safeTransferFrom(
+            address(this),
+            msg.sender,
+            listing.tokenId
+        );
 
         // Update listing
         listing.isActive = false;
-
-        // Emit event (not included but recommended)
     }
-    
-    // To implement: add more features as per points below
-        // Function to allow sellers to cancel their listings.
-        // Functions for updating listing prices.
-        // Implement an event system for all contract actions.
-        // Add a platform fee percentage for all purchases in the marketplace.
 
+    // To implement: add more features as per points below
+    // Function to allow sellers to cancel their listings.
+    // Functions for updating listing prices.
+    // Implement an event system for all contract actions.
+    // Add a platform fee percentage for all purchases in the marketplace.
+    // Frontend to interact with the contract functions, including listing NFTs and purchasing them.
 }
