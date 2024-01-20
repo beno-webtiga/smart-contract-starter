@@ -19,7 +19,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone 
+   git clone https://github.com/beno-webtiga/smart-contract-starter.git
    ```
 
 2. Change into the project directory:
@@ -55,7 +55,7 @@ npx hardhat compile
 Deploy the smart contracts to a specific network using the deployment script. Replace `<network_name>` with the desired network name (e.g., "sepolia," "goerli").
 
 ```bash
-npx hardhat run --network <network_name> scripts/1_deploy_BIRegistry.js
+npx hardhat run --network <network_name> scripts/1_deploy_IRegistry.js
 ```
 
 ### Environment Configuration
