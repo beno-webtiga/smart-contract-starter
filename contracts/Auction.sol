@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-interface IERC721 {
-    function safeTransferFrom(address from, address to, uint tokenId) external;
-
-    function transferFrom(address, address, uint) external;
-}
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract Auction {
     IERC721 public nft;
