@@ -69,6 +69,7 @@ contract Auction {
     // To implement: add more features as per points below
     // Implement an event system for all contract actions.
     // Add withdrawal logic allowing bidders to withdraw their bids so long as they aren’t the current highest bidder.
-    // Change the system to allow bidding with a specified ERC-20 token than ETH.
+    // Change the system to allow auction of multiple NFT’s along with the option for bidding with both specified ERC-20 tokens or ETH.
+    // Add test cases for the contract functions
     // Frontend to interact with the contract functions that shows live auction, current highest bid, allows for placing bids, and displays auction results.
 }

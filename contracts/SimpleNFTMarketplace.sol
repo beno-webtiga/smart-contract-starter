@@ -60,9 +60,9 @@ contract SimpleNFTMarketplace is ERC721URIStorage, ReentrancyGuard {
     }
 
     // To implement: add more features as per points below
-    // Function to allow sellers to cancel their listings.
-    // Functions for updating listing prices.
+    // Function to allow sellers to update listing price and cancel their listings.
     // Implement an event system for all contract actions.
     // Add a platform fee percentage for all purchases in the marketplace.
+    // Add test cases for the contract functions
     // Frontend to interact with the contract functions, including listing NFTs and purchasing them.
 }

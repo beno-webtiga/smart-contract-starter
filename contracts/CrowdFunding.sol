@@ -58,5 +58,6 @@ contract Crowdfunding {
     // Add the ability to set minimum and maximum contribution limits.
     // Implement an event system for all contract actions.
     // Develop a system to grant rewards based on the contribution amount in the form of another ERC20 token.
+    // Add test cases for the contract functions
     // Frontend to interact with the contract functions. And see real time contributed amounts.
 }
