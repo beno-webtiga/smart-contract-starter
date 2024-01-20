@@ -1,0 +1,30 @@
+{
+  "name": "smart-contract-starter-code",
+  "version": "1.0.0",
+  "description": "Repository Starter Smart Contracts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "blockchain",
+    "smart",
+    "contracts",
+    "evm",
+    "solidity"
+  ],
+  "author": "Beno Sam Binu",
+  "license": "ISC",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.4",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@openzeppelin/hardhat-upgrades": "^2.2.1",
+    "ethers": "^6.7.1",
+    "hardhat": "^2.17.3"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1",
+    "dotenv": "^16.3.1"
+  }
+}
